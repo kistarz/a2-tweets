@@ -23,10 +23,31 @@ class Tweet {
         return 'miscellaneous';
     }
 
+    //helper for writtens that basically parse
+    private get userText():string{
+        if (this.source !== 'completed_event'){
+            return '';
+        }
+        const cleaned = this.text
+            .replace(/https?:\/\/\S+/g, '')
+            .replace(/#Runkeeper\b/gi, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+        const match = cleaned.match(/Just (?:completed|posted) an? .*?\s-(?:\s+(.*))?$/);
+        if (!match || !match[1]){
+            return '';
+        }
+        const text = match[1].trim();
+        if (text === 'TomTom MySports Watch'){
+            return '';
+        }
+        return text;
+    }
+
     //returns a boolean, whether the text includes any content written by the person tweeting.
     get written():boolean {
         //TODO: identify whether the tweet is written
-        return false;
+        return this.userText.length > 0;
     }
 
     get writtenText():string {
@@ -34,7 +55,7 @@ class Tweet {
             return "";
         }
         //TODO: parse the written text from the tweet
-        return "";
+        return this.userText;
     }
 
     get activityType():string {
@@ -42,7 +63,11 @@ class Tweet {
             return "unknown";
         }
         //TODO: parse the activity type from the text of the tweet
-        return "";
+        const match = this.text.match(/Just (?:completed|posted) an? [0-9.]+\s?(?:mi|km)\s+([a-zA-Z\s]+?)(?:\s+-|\s+with\s|\s+https?:|\s+#|$)/i);
+        if (match && match[1]) {
+            return match[1].trim().toLowerCase();
+        }
+        return "unknown";
     }
 
     get distance():number {
@@ -50,7 +75,21 @@ class Tweet {
             return 0;
         }
         //TODO: prase the distance from the text of the tweet
-        return 0;
+        const match = this.text.match(/Just (?:completed|posted) an? ([0-9.]+)\s?(mi|km)\b/i);
+        if (!match){
+            return 0;
+        }
+        const val = parseFloat(match[1]);
+        const unit = match[2].toLowerCase();
+
+        if (isNaN(val)){
+            return 0;
+        }
+
+        if (unit === 'km'){
+            return val / 1.609;
+        }
+        return val;
     }
 
     getHTMLTableRow(rowNumber:number):string {
