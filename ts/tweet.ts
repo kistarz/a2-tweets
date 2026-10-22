@@ -96,7 +96,7 @@ class Tweet {
             return text
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
-                .replace(/</g, '&gt;')
+                .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
         }
 
@@ -106,9 +106,9 @@ class Tweet {
             /(https?:\/\/\S+)/g,
             '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
         );
-        return '<tr> class="tweet-row">'
+        return '<tr class="tweet-row">'
             + '<td>' + rowNumber + '</td>'
-            + '<td>' + this.escapeHTML(this.activityType) + '</td'
+            + '<td>' + this.escapeHTML(this.activityType) + '</td>'
             + '<td>' + linkedText + '</td>'
             + '</tr>';
     }

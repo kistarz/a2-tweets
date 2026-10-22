@@ -20,7 +20,7 @@ function parseTweets(runkeeper_tweets) {
 	//TODO: Filter to just the written tweets
 	written_tweets = runkeeper_tweets
 		.map(function(tweet){
-			return new tweet(tweet.text, tweet.created_at);
+			return new Tweet(tweet.text, tweet.created_at);
 		})
 		.filter(function(tweet){
 			return tweet.written;
@@ -37,7 +37,7 @@ function updateSearch(){
 	const query = search.toLowerCase();
 	const table = document.getElementById('tweetTable');
 
-	table.querySelectorAll('tr.tweet-row').forEach*(function(row){
+	table.querySelectorAll('tr.tweet-row').forEach(function(row){
 		row.remove();
 	});
 
