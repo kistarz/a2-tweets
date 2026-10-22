@@ -58,7 +58,10 @@ function updateSearch(){
 		return item.tweet.getHTMLTableRow(index+1);
 	}).join('');
 
-	const body = table.tBodies[table.tBodies.length-1] || table.appendChild(document.createElement('tbody'));
+	let body = table;
+	if (table.tagName === 'TABLE') {
+		body = table.tBodies[table.tBodies.length-1] || table.appendChild(document.createElement('tbody'));
+	}
 	body.insertAdjacentHTML('beforeend', rows);
 }
 
