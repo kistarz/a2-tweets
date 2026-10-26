@@ -1,3 +1,4 @@
+//helper funxtion to help edit the html elements text!
 function setText(name, value){
 	const byId = document.getElementById(name);
 	if (byId){
@@ -8,6 +9,7 @@ function setText(name, value){
 	});
 }
 
+// helper to get the avg of a list of #s
 function average(numbers){
 	return numbers.reduce(function(sum, n) {return sum + n; }, 0) / numbers.length;
 }
@@ -23,6 +25,7 @@ function parseTweets(runkeeper_tweets) {
 		return new Tweet(tweet.text, tweet.created_at);
 	});
 
+	// tracking the tweets for each activity type
 	const completed = tweet_array.filter(function(tweet) {return tweet.source === 'completed_event'; });
 	const counts = {};
 	completed.forEach(function(tweet){
@@ -35,6 +38,7 @@ function parseTweets(runkeeper_tweets) {
 	setText('secondMost', types[1]);
 	setText('thirdMost', types[2]);
 
+	// longest and shortest of the top 3 activities, avg distance
 	const topThree = types.slice(0, 3);
 	const averageDistance = {};
 	topThree.forEach(function(type){
@@ -59,7 +63,7 @@ function parseTweets(runkeeper_tweets) {
 	const longestTweets = completed.filter(function(tweet) {return tweet.activityType === longestType && tweet.distance > 0; });
 	const weekendAverage = average(longestTweets.filter(isWeekend).map(function(tweet) {return tweet.distance; }));
 	const weekdayAverage = average(longestTweets.filter(function(tweet) {return !isWeekend(tweet); }).map(function(tweet) {return tweet.distance }));
-	setText('weekdayOrWeekendLongest', weekendAverage > weekdayAverage ? 'weekends' : 'weekdays');
+	setText('weekdayOrWeekendLonger', weekendAverage > weekdayAverage ? 'weekends' : 'weekdays');
 	
 	
 	//TODO: create a new array or manipulate tweet_array to create a graph of the number of tweets containing each type of activity.
@@ -77,6 +81,7 @@ function parseTweets(runkeeper_tweets) {
 		return topThree.includes(item.activityType) && item.distance > 0;
 	});
 	
+	// first graph, # of tweets by activity type
 	activity_vis_spec = {
 	  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 	  "description": "A graph of the number of Tweets containing each type of activity.",
@@ -103,6 +108,8 @@ function parseTweets(runkeeper_tweets) {
 
 	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
 	//Use those visualizations to answer the questions about which activities tended to be longest and when.
+
+	// graph 2, distance by day of week
 	distance_vis_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 		"description": "distance of each tweet for the three most tweeted activities by day of the week",
@@ -135,7 +142,8 @@ function parseTweets(runkeeper_tweets) {
 		}
 	};
 	vegaEmbed('#distanceVis', distance_vis_spec, {actions:false});
-	
+
+	// graph 3, mean distance for days of week
 	distance_vis_aggregated_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 		"description": "mean distance for three most tweeted activities by day of the week!",
@@ -170,6 +178,7 @@ function parseTweets(runkeeper_tweets) {
 	};
 	vegaEmbed('#distanceVisAggregated', distance_vis_aggregated_spec, {actions:false});
 
+	// switch between graphs
 	const allDistances = document.getElementById('distanceVis');
 	const meanDistances = document.getElementById('distanceVisAggregated');
 	const aggregateButton = document.getElementById('aggregate');

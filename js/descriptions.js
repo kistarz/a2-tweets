@@ -1,3 +1,4 @@
+// halper to set the text of the html elements
 function setText(name, value){
 	const byId = document.getElementById(name);
 	if (byId) {
@@ -32,11 +33,13 @@ function parseTweets(runkeeper_tweets) {
 	updateSearch();	
 }
 
+// runs each time search box changes
 function updateSearch(){
 	const search = document.getElementById('textFilter').value;
 	const query = search.toLowerCase();
 	const table = document.getElementById('tweetTable');
 
+	// remove the last searchs rows 
 	table.querySelectorAll('tr.tweet-row').forEach(function(row){
 		row.remove();
 	});
@@ -47,6 +50,7 @@ function updateSearch(){
 		return;
 	}
 
+	// search the written text
 	const matches = written_tweets.filter(function(item){
 		return item.searchable.includes(query);
 	});

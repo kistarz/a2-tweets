@@ -11,6 +11,7 @@ class Tweet {
     get source():string {
         //TODO: identify whether the source is a live event, an achievement, a completed event, or miscellaneous.
         const t = this.text;
+        // sort based on starting phrase
         if (t.startsWith('Watch my') || t.includes('#RKLive')){
             return 'live_event';
         }
@@ -63,6 +64,7 @@ class Tweet {
             return "unknown";
         }
         //TODO: parse the activity type from the text of the tweet
+        // match to activity type and find activity name
         const match = this.text.match(/Just (?:completed|posted) an? [0-9.]+\s?(?:mi|km)\s+([a-zA-Z\s]+?)(?:\s+-|\s+with\s|\s+https?:|\s+#|$)/i);
         if (match && match[1]) {
             return match[1].trim().toLowerCase();
@@ -75,6 +77,7 @@ class Tweet {
             return 0;
         }
         //TODO: prase the distance from the text of the tweet
+        // grab the value and unit for a completed run activity
         const match = this.text.match(/Just (?:completed|posted) an? ([0-9.]+)\s?(mi|km)\b/i);
         if (!match){
             return 0;
@@ -91,7 +94,8 @@ class Tweet {
         }
         return val;
     }
-
+    
+    // makes sure tweet text doesn't break page
     private escapeHTML(text:string):string {
             return text
                 .replace(/&/g, '&amp;')
